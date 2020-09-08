@@ -1,10 +1,11 @@
-import React, {useState }from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import {createStyles, makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+
 const {Wit, log} = require('node-wit');
 
 
@@ -37,29 +38,37 @@ export default () => {
     const classes = useStyles();
     const [state, setState] = useState(initState);
 
-    const handleChange = (e) => setState({ utterance: e.target.value});
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "audio.js";
+        script.async = true;
+        document.body.appendChild(script);
+    });
+
+    const handleChange = (e) => setState({utterance: e.target.value});
 
     const handleButton = async (e) => {
         e.preventDefault();
-        
+
         await client.message(JSON.stringify(state.utterance), {})
             .then((data) => {
                 var result = JSON.stringify(data.intents);
-            
+
                 if (result === '[]') {
                     result = 'Sorry, I did not understand. Please try again'
                 } else {
                     result = data.intents[0].name;
                 }
                 setState({answer: result})
-               // setState({utterance: ''})
+                // setState({utterance: ''})
             })
             .catch(console.error);
 
-        };
+    };
 
     return (
         <div className="App">
+
             <h2>
                 ELIZA
             </h2>
@@ -77,6 +86,8 @@ export default () => {
                             value={state.utterance || ""}
                             onChange={handleChange}
                         />
+                        <p>Click To Record Input:</p>
+                        <audio id="player" controls></audio>
                     </Grid>
                     <Grid item xs={12}>
                         <Button
@@ -91,7 +102,7 @@ export default () => {
                         </Button>
                     </Grid>
                     <Grid item xs={12}>
-                       Response: {state.answer}
+                        Response: {state.answer}
                     </Grid>
                 </Grid>
             </form>
