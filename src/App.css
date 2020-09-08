@@ -1,4 +1,14 @@
 .App {
   text-align: center;
+  padding: 50px 0 100px;
+  font-family: 'Kufam', cursive;
+  background-color: rgb(240, 240, 240);
 }
 
+body {
+  background-color: rgba(220, 220, 220);
+}
+
+h3, h4 {
+  font-weight: normal;
+}
